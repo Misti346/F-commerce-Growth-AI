@@ -265,3 +265,52 @@ def update_order(order_id):
             cursor.close()
 
         connection.close()
+
+@orders_bp.route("/api/orders/<int:order_id>", methods=["DELETE"])
+def delete_order(order_id):
+
+    connection = get_db_connection()
+
+    if not connection:
+        return jsonify({
+            "message": "Database connection failed"
+        }), 500
+
+    cursor = None
+
+    try:
+        cursor = connection.cursor()
+
+        query = """
+            DELETE FROM orders
+            WHERE order_id = %s
+        """
+
+        cursor.execute(query, (order_id,))
+
+        if cursor.rowcount == 0:
+            return jsonify({
+                "message": "Order not found"
+            }), 404
+
+        connection.commit()
+
+        return jsonify({
+            "message": "Order deleted successfully!",
+            "order_id": order_id,
+            "status": "Success"
+        }), 200
+
+    except Exception as e:
+        connection.rollback()
+
+        return jsonify({
+            "message": "Failed to delete order",
+            "error": str(e)
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        connection.close()

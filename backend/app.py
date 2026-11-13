@@ -2,9 +2,11 @@
 from flask import Flask, jsonify
 from database import get_db_connection
 from routes.orders import orders_bp
+from routes.customers import customers_bp
 
 app = Flask(__name__)
 app.register_blueprint(orders_bp)
+app.register_blueprint(customers_bp)
 
 @app.route("/")
 def home():
