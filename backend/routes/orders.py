@@ -119,3 +119,62 @@ def get_all_orders():
             cursor.close()
 
         connection.close() 
+
+@orders_bp.route("/api/orders/<int:order_id>", methods=["GET"])
+def get_single_order(order_id):
+
+    connection = get_db_connection()
+
+    if not connection:
+        return jsonify({
+            "message": "Database connection failed"
+        }), 500
+
+    cursor = None
+
+    try:
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+            SELECT
+                o.order_id,
+                o.seller_id,
+                o.customer_id,
+                c.customer_name,
+                c.phone,
+                c.address,
+                o.order_date,
+                o.total_amount,
+                o.payment_method,
+                o.order_status,
+                o.delivery_status
+            FROM orders o
+            JOIN customers c
+            ON o.customer_id = c.customer_id
+            WHERE o.order_id = %s
+        """
+
+        cursor.execute(query, (order_id,))
+        order = cursor.fetchone()
+
+        if not order:
+            return jsonify({
+                "message": "Order not found"
+            }), 404
+
+        return jsonify({
+            "order": order,
+            "status": "Success"
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "message": "Failed to fetch order",
+            "error": str(e)
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        connection.close()
