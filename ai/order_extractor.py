@@ -16,7 +16,7 @@ def normalize_digits(text):
 def extract_phone(message):
     message = normalize_digits(message)
 
-    match = re.search(r'01[3-9]\d{8}', message)
+    match = re.search(r'(?<!\d)01\d{2,13}(?!\d)', message)
 
     return match.group() if match else None
 
