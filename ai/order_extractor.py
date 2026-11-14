@@ -1,5 +1,5 @@
-
 import re
+
 
 # Convert Bengali digits into English digits
 def normalize_digits(text):
@@ -44,29 +44,66 @@ def extract_quantity(message):
         re.IGNORECASE
     )
 
-    return int(match.group(1)) if match else 1
+    if match:
+        return int(match.group(1))
 
+    if re.search(r'একটা|একটি|\bone\b', message, re.IGNORECASE):
+        return 1
+
+    return 1
+
+
+# Extract product name
 def extract_product(message):
     message = normalize_digits(message)
 
     patterns = [
-        r'একটা\s+(.+?)(?=\s+(?:দাম|ফোন|ঠিকানা|নিবো|দেন)|$)',
-        r'একটি\s+(.+?)(?=\s+(?:দাম|ফোন|ঠিকানা|নিবো|দেন)|$)',
-        r'(\d+)\s*(?:টা|টি)\s+(.+?)(?=\s+(?:দাম|ফোন|ঠিকানা)|$)',
-        r'(\d+)\s+(?:ta|pcs?)\s+(.+?)(?=\s+(?:price|phone|address)|$)',
-        r'(?:need|want)\s+(?:one\s+)?(.+?)(?=\s+(?:price|phone|address)|$)'
+        # Bangla quantity: 2 ta কালো জামা
+        r'(?:\d+\s*(?:টা|টি))\s+(.+?)(?=\s*(?:দাম|ফোন|ঠিকানা|নিবো|নেবো|দেন|চাই)|$)',
+
+        # Banglish quantity: 2 ta shirt
+        r'(?:\d+\s*(?:ta|pcs?|pieces?))\s+(.+?)(?=\s*(?:price|phone|address|nibo|nebo|chai|den)|$)',
+
+        # Bangla quantity words
+        r'(?:একটা|একটি)\s+(.+?)(?=\s*(?:দাম|ফোন|ঠিকানা|নিবো|নেবো|দেন|চাই)|$)',
+
+        # English: I need a bag / want a shirt
+        r'(?:need|want)\s+(?:(?:a|an|one)\s+)?(.+?)(?=\s*(?:price|phone|address)|$)',
+
+        # Bangla without quantity: আপু কালো জামা নিবো
+        r'(?:আপু|আপা|ভাইয়া|ভাই)\s+(.+?)\s*(?:নিবো|নেবো|নিতে চাই|চাই|দেন|নিব|নেব)',
+
+        # Bangla without greeting: কালো জামা নিবো
+        r'(.+?)\s*(?:নিবো|নেবো|নিতে চাই|চাই|নিব|নেব)',
+
+        # Banglish without quantity: কালো জামা nibo
+        r'(?:apu|apa|vaiya|vai)\s+(.+?)\s*(?:nibo|nebo|chai|den)',
+
+        # English product name without quantity
+        r'(?:buy|order)\s+(.+?)(?=\s*(?:price|phone|address)|$)'
     ]
 
     for pattern in patterns:
         match = re.search(pattern, message, re.IGNORECASE)
 
         if match:
-            if len(match.groups()) == 2:
-                return match.group(2).strip()
-            return match.group(1).strip()
+            product = match.group(1).strip()
+
+            # Remove common greeting words if captured
+            product = re.sub(
+                r'^(?:আপু|আপা|ভাইয়া|ভাই|apu|apa|vaiya|vai)\s+',
+                '',
+                product,
+                flags=re.IGNORECASE
+            )
+
+            if product:
+                return product
 
     return None
 
+
+# Extract delivery address
 def extract_address(message):
     patterns = [
         r'ঠিকানা\s+(.+)',
@@ -82,6 +119,8 @@ def extract_address(message):
 
     return None
 
+
+# Extract all order information
 def extract_order(message):
     return {
         "product_name": extract_product(message),

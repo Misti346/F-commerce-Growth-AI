@@ -3,10 +3,15 @@ from flask import Flask, jsonify
 from database import get_db_connection
 from routes.orders import orders_bp
 from routes.customers import customers_bp
+from routes.products import products_bp
 
 app = Flask(__name__)
+
+# Register API blueprints
 app.register_blueprint(orders_bp)
 app.register_blueprint(customers_bp)
+app.register_blueprint(products_bp)
+
 
 @app.route("/")
 def home():
@@ -31,5 +36,7 @@ def test_database():
         "message": "Database Connection Failed!",
         "status": "Error"
     }), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True)
