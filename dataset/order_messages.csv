@@ -1,0 +1,21 @@
+message_id,customer_message,product_name,quantity,unit_price,phone,address,language,missing_fields
+1,"আপু একটা কালো জামা দেন সাইজ M দাম ৮৫০ টাকা ফোন 01700000001 ঠিকানা মিরপুর ঢাকা",কালো জামা,1,850,01700000001,মিরপুর ঢাকা,Bangla,
+2,"2 ta blue shirt lagbe price 1200 taka phone 01800000002 address Dhanmondi Dhaka",Blue shirt,2,1200,01800000002,Dhanmondi Dhaka,Banglish,
+3,"I need one red bag price 950 taka phone 01900000003 address Uttara Dhaka",Red bag,1,950,01900000003,Uttara Dhaka,English,
+4,"আপু একটা থ্রি পিস নিবো দাম ১৫০০ টাকা",থ্রি পিস,1,1500,,,Bangla,phone;address
+5,"Ekta black shoe lagbe size 42 phone 01600000004 address Mirpur",Black shoe,1,,01600000004,Mirpur,Banglish,unit_price
+6,"I want 3 white t-shirts phone 01700000005 address Mohammadpur Dhaka",White t-shirt,3,,01700000005,Mohammadpur Dhaka,English,unit_price
+7,"একটা নীল শাড়ি নিবো ২২০০ টাকা ফোন 01800000006 ঠিকানা চাঁদপুর",নীল শাড়ি,1,2200,01800000006,চাঁদপুর,Bangla,
+8,"apu 2 ta red bag diben price 700 each phone 01900000007",Red bag,2,700,01900000007,,Banglish,address
+9,"Please send one black handbag for 1200 taka",Black handbag,1,1200,,,English,phone;address
+10,"একটা ঘড়ি চাই ফোন 01500000008 ঠিকানা বনানী ঢাকা",ঘড়ি,1,,01500000008,বনানী ঢাকা,Bangla,unit_price
+11,"3 ta blue panjabi lagbe size L price 1800 each phone 01600000009 address Chandpur",Blue panjabi,3,1800,01600000009,Chandpur,Banglish,
+12,"আপু একটা সাদা জুতা লাগবে দাম ১১০০ টাকা ঠিকানা উত্তরা",সাদা জুতা,1,1100,,উত্তরা,Bangla,phone
+13,"I need two green shirts for 1500 taka each phone 01700000010",Green shirt,2,1500,01700000010,,English,address
+14,"একটা লাল ব্যাগ নিবো ফোন 01800000011 ঠিকানা ধানমন্ডি",লাল ব্যাগ,1,,01800000011,ধানমন্ডি,Bangla,unit_price
+15,"Ekta pink dress chai price 1350 taka phone 01900000012 address Uttara Dhaka",Pink dress,1,1350,01900000012,Uttara Dhaka,Banglish,
+16,"আপু ২টা কালো টি শার্ট দেন দাম ৫০০ টাকা করে ফোন 01600000013",কালো টি শার্ট,2,500,01600000013,,Bangla,address
+17,"Send me one blue bag address Gulshan Dhaka phone 01500000014",Blue bag,1,,01500000014,Gulshan Dhaka,English,unit_price
+18,"একটা পাঞ্জাবি চাই দাম ১৮০০ টাকা ফোন 01700000015 ঠিকানা মিরপুর ঢাকা",পাঞ্জাবি,1,1800,01700000015,মিরপুর ঢাকা,Bangla,
+19,"2 ta white shoe lagbe size 40 phone 01800000016",White shoe,2,,01800000016,,Banglish,unit_price;address
+20,"I want one yellow dress price 1600 taka address Banani Dhaka",Yellow dress,1,1600,,Banani Dhaka,English,phone
