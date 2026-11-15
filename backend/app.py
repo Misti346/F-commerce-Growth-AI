@@ -1,3 +1,8 @@
+import os
+import sys
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJECT_ROOT)
 
 from flask import Flask, jsonify
 from database import get_db_connection
