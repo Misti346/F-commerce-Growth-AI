@@ -9,6 +9,7 @@ from database import get_db_connection
 from routes.orders import orders_bp
 from routes.customers import customers_bp
 from routes.products import products_bp
+from routes.ai import ai_bp
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ app = Flask(__name__)
 app.register_blueprint(orders_bp)
 app.register_blueprint(customers_bp)
 app.register_blueprint(products_bp)
+app.register_blueprint(ai_bp)
 
 
 @app.route("/")
