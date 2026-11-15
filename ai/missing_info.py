@@ -24,7 +24,9 @@ def calculate_confidence(order, message):
     normalized_message = normalize_digits(message)
 
     explicit_quantity = re.search(
-        r'\d+\s*(?:টা|টি|ta|pcs?|pieces?)|একটা|একটি|\bone\b',
+        r'\b(?:need|want|order)\s+\d+\b'
+        r'|\d+\s*(?:টা|টি|ta|pcs?|pieces?)'
+        r'|একটা|একটি|\bone\b',
         normalized_message,
         re.IGNORECASE
     )

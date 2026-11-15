@@ -17,7 +17,10 @@ def normalize_digits(text):
 def extract_phone(message):
     message = normalize_digits(message)
 
-    match = re.search(r'(?<!\d)01\d{2,13}(?!\d)', message)
+    match = re.search(
+        r'(?<!\d)01\d{2,13}(?!\d)',
+        message
+    )
 
     return match.group() if match else None
 
@@ -39,6 +42,17 @@ def extract_price(message):
 def extract_quantity(message):
     message = normalize_digits(message)
 
+    # English numeric quantity: I need 2 shirts
+    match = re.search(
+        r'\b(?:need|want|order)\s+(\d+)\b',
+        message,
+        re.IGNORECASE
+    )
+
+    if match:
+        return int(match.group(1))
+
+    # Bangla and Banglish numeric quantity
     match = re.search(
         r'(\d+)\s*(?:টা|টি|ta|pcs?|pieces?)',
         message,
@@ -48,7 +62,12 @@ def extract_quantity(message):
     if match:
         return int(match.group(1))
 
-    if re.search(r'একটা|একটি|\bone\b', message, re.IGNORECASE):
+    # Quantity words
+    if re.search(
+        r'একটা|একটি|\bone\b|\ba\b|\ban\b',
+        message,
+        re.IGNORECASE
+    ):
         return 1
 
     return 1
@@ -59,6 +78,9 @@ def extract_product(message):
     message = normalize_digits(message)
 
     patterns = [
+        # English numeric quantity: I need 2 Black Shirt
+        r'\b(?:need|want|order)\s+\d+\s+(.+?)(?=\s*(?:price|phone|address)|$)',
+
         # Bangla quantity
         r'(?:\d+\s*(?:টা|টি))\s+(.+?)(?=\s*(?:দাম|ফোন|ঠিকানা|নিবো|নেবো|দেন|চাই)|$)',
 
@@ -68,10 +90,10 @@ def extract_product(message):
         # Bangla quantity words
         r'(?:একটা|একটি)\s+(.+?)(?=\s*(?:দাম|ফোন|ঠিকানা|নিবো|নেবো|দেন|চাই)|$)',
 
-        # English: I need a bag / want a shirt
+        # English without numeric quantity
         r'(?:need|want)\s+(?:(?:a|an|one)\s+)?(.+?)(?=\s*(?:price|phone|address)|$)',
 
-        # Bangla without quantity
+        # Bangla with greeting
         r'(?:আপু|আপা|ভাইয়া|ভাই)\s+(.+?)\s*(?:নিবো|নেবো|নিতে চাই|চাই|দেন|নিব|নেব)',
 
         # Bangla without greeting
@@ -80,24 +102,28 @@ def extract_product(message):
         # Banglish without quantity
         r'(?:apu|apa|vaiya|vai)\s+(.+?)\s*(?:nibo|nebo|chai|den)',
 
-        # English product name without quantity
+        # English product name
         r'(?:buy|order)\s+(.+?)(?=\s*(?:price|phone|address)|$)'
     ]
 
     for pattern in patterns:
-        match = re.search(pattern, message, re.IGNORECASE)
+        match = re.search(
+            pattern,
+            message,
+            re.IGNORECASE
+        )
 
         if match:
             product = match.group(1).strip()
 
-            # Remove phone numbers from product name
+            # Remove phone number
             product = re.sub(
                 r'(?<!\d)01\d{2,13}(?!\d)',
                 '',
                 product
             ).strip()
 
-            # Remove price information if captured
+            # Remove price information
             product = re.sub(
                 r'\b(?:price|দাম)\s*[:=]?\s*\d+(?:\.\d+)?',
                 '',
@@ -105,13 +131,20 @@ def extract_product(message):
                 flags=re.IGNORECASE
             ).strip()
 
-            # Remove common greeting words
+            # Remove greeting
             product = re.sub(
                 r'^(?:আপু|আপা|ভাইয়া|ভাই|apu|apa|vaiya|vai)\s+',
                 '',
                 product,
                 flags=re.IGNORECASE
-            )
+            ).strip()
+
+            # Remove trailing punctuation
+            product = re.sub(
+                r'[.,!?;:]+$',
+                '',
+                product
+            ).strip()
 
             if product:
                 return product
@@ -121,6 +154,8 @@ def extract_product(message):
 
 # Extract delivery address
 def extract_address(message):
+    message = normalize_digits(message)
+
     patterns = [
         r'ঠিকানা\s+(.+)',
         r'address\s+(.+)',
@@ -128,7 +163,11 @@ def extract_address(message):
     ]
 
     for pattern in patterns:
-        match = re.search(pattern, message, re.IGNORECASE)
+        match = re.search(
+            pattern,
+            message,
+            re.IGNORECASE
+        )
 
         if match:
             address = match.group(1).strip()
