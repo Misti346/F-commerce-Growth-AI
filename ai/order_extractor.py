@@ -1,3 +1,4 @@
+
 import re
 
 
@@ -58,10 +59,10 @@ def extract_product(message):
     message = normalize_digits(message)
 
     patterns = [
-        # Bangla quantity: 2 ta কালো জামা
+        # Bangla quantity
         r'(?:\d+\s*(?:টা|টি))\s+(.+?)(?=\s*(?:দাম|ফোন|ঠিকানা|নিবো|নেবো|দেন|চাই)|$)',
 
-        # Banglish quantity: 2 ta shirt
+        # Banglish quantity
         r'(?:\d+\s*(?:ta|pcs?|pieces?))\s+(.+?)(?=\s*(?:price|phone|address|nibo|nebo|chai|den)|$)',
 
         # Bangla quantity words
@@ -70,13 +71,13 @@ def extract_product(message):
         # English: I need a bag / want a shirt
         r'(?:need|want)\s+(?:(?:a|an|one)\s+)?(.+?)(?=\s*(?:price|phone|address)|$)',
 
-        # Bangla without quantity: আপু কালো জামা নিবো
+        # Bangla without quantity
         r'(?:আপু|আপা|ভাইয়া|ভাই)\s+(.+?)\s*(?:নিবো|নেবো|নিতে চাই|চাই|দেন|নিব|নেব)',
 
-        # Bangla without greeting: কালো জামা নিবো
+        # Bangla without greeting
         r'(.+?)\s*(?:নিবো|নেবো|নিতে চাই|চাই|নিব|নেব)',
 
-        # Banglish without quantity: কালো জামা nibo
+        # Banglish without quantity
         r'(?:apu|apa|vaiya|vai)\s+(.+?)\s*(?:nibo|nebo|chai|den)',
 
         # English product name without quantity
@@ -89,7 +90,22 @@ def extract_product(message):
         if match:
             product = match.group(1).strip()
 
-            # Remove common greeting words if captured
+            # Remove phone numbers from product name
+            product = re.sub(
+                r'(?<!\d)01\d{2,13}(?!\d)',
+                '',
+                product
+            ).strip()
+
+            # Remove price information if captured
+            product = re.sub(
+                r'\b(?:price|দাম)\s*[:=]?\s*\d+(?:\.\d+)?',
+                '',
+                product,
+                flags=re.IGNORECASE
+            ).strip()
+
+            # Remove common greeting words
             product = re.sub(
                 r'^(?:আপু|আপা|ভাইয়া|ভাই|apu|apa|vaiya|vai)\s+',
                 '',
@@ -115,7 +131,16 @@ def extract_address(message):
         match = re.search(pattern, message, re.IGNORECASE)
 
         if match:
-            return match.group(1).strip()
+            address = match.group(1).strip()
+
+            # Remove phone number from address
+            address = re.sub(
+                r'(?<!\d)01\d{2,13}(?!\d)',
+                '',
+                address
+            ).strip()
+
+            return address
 
     return None
 
